@@ -1,5 +1,5 @@
-
-// Save InternetAddict ControlDlg.cpp : ÊµÏÖÎÄ¼ş
+ï»¿
+// Save InternetAddict ControlDlg.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -12,20 +12,20 @@
 #endif
 
 
-// ÓÃÓÚÓ¦ÓÃ³ÌĞò¡°¹ØÓÚ¡±²Ëµ¥ÏîµÄ CAboutDlg ¶Ô»°¿ò
+// ç”¨äºåº”ç”¨ç¨‹åºâ€œå…³äºâ€èœå•é¡¹çš„ CAboutDlg å¯¹è¯æ¡†
 
 class CAboutDlg : public CDialogEx
 {
 public:
 	CAboutDlg();
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 	enum { IDD = IDD_ABOUTBOX };
 
 	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV æ”¯æŒ
 
-// ÊµÏÖ
+// å®ç°
 protected:
 	DECLARE_MESSAGE_MAP()
 };
@@ -43,7 +43,7 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// CSaveInternetAddictControlDlg ¶Ô»°¿ò
+// CSaveInternetAddictControlDlg å¯¹è¯æ¡†
 
 
 
@@ -71,15 +71,15 @@ BEGIN_MESSAGE_MAP(CSaveInternetAddictControlDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// CSaveInternetAddictControlDlg ÏûÏ¢´¦Àí³ÌĞò
+// CSaveInternetAddictControlDlg æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 BOOL CSaveInternetAddictControlDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	// ½«¡°¹ØÓÚ...¡±²Ëµ¥ÏîÌí¼Óµ½ÏµÍ³²Ëµ¥ÖĞ¡£
+	// å°†â€œå…³äº...â€èœå•é¡¹æ·»åŠ åˆ°ç³»ç»Ÿèœå•ä¸­ã€‚
 
-	// IDM_ABOUTBOX ±ØĞëÔÚÏµÍ³ÃüÁî·¶Î§ÄÚ¡£
+	// IDM_ABOUTBOX å¿…é¡»åœ¨ç³»ç»Ÿå‘½ä»¤èŒƒå›´å†…ã€‚
 	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
 	ASSERT(IDM_ABOUTBOX < 0xF000);
 
@@ -97,20 +97,20 @@ BOOL CSaveInternetAddictControlDlg::OnInitDialog()
 		}
 	}
 
-	// ÉèÖÃ´Ë¶Ô»°¿òµÄÍ¼±ê¡£µ±Ó¦ÓÃ³ÌĞòÖ÷´°¿Ú²»ÊÇ¶Ô»°¿òÊ±£¬¿ò¼Ü½«×Ô¶¯
-	//  Ö´ĞĞ´Ë²Ù×÷
-	SetIcon(m_hIcon, TRUE);			// ÉèÖÃ´óÍ¼±ê
-	SetIcon(m_hIcon, FALSE);		// ÉèÖÃĞ¡Í¼±ê
+	// è®¾ç½®æ­¤å¯¹è¯æ¡†çš„å›¾æ ‡ã€‚å½“åº”ç”¨ç¨‹åºä¸»çª—å£ä¸æ˜¯å¯¹è¯æ¡†æ—¶ï¼Œæ¡†æ¶å°†è‡ªåŠ¨
+	//  æ‰§è¡Œæ­¤æ“ä½œ
+	SetIcon(m_hIcon, TRUE);			// è®¾ç½®å¤§å›¾æ ‡
+	SetIcon(m_hIcon, FALSE);		// è®¾ç½®å°å›¾æ ‡
 
-	// TODO: ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–ä»£ç 
 
 	CRect rect;
-	this->listCtrl.GetHeaderCtrl()->EnableWindow(false);                     //¹Ì¶¨±êÌâ²»±»ÒÆ¶¯
-	this->listCtrl.GetClientRect(&rect);                                     //»ñÈ¡±à³ÌÓïÑÔÁĞ±íÊÓÍ¼¿Ø¼şµÄÎ»ÖÃºÍ´óĞ¡
+	this->listCtrl.GetHeaderCtrl()->EnableWindow(false);                     //å›ºå®šæ ‡é¢˜ä¸è¢«ç§»åŠ¨
+	this->listCtrl.GetClientRect(&rect);                                     //è·å–ç¼–ç¨‹è¯­è¨€åˆ—è¡¨è§†å›¾æ§ä»¶çš„ä½ç½®å’Œå¤§å°
 	this->listCtrl.SetExtendedStyle(this->listCtrl.GetExtendedStyle()
-		| LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);                          //ÎªÁĞ±íÊÓÍ¼¿Ø¼şÌí¼ÓÈ«ĞĞÑ¡ÖĞºÍÕ¤¸ñ·ç¸ñ
-	this->listCtrl.InsertColumn(0, _T("IPµØÖ·"), LVCFMT_CENTER, rect.Width() * 2 / 3 - 10, 0);
-	this->listCtrl.InsertColumn(1, _T("×´Ì¬"), LVCFMT_CENTER, rect.Width() / 3, 0);
+		| LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);                          //ä¸ºåˆ—è¡¨è§†å›¾æ§ä»¶æ·»åŠ å…¨è¡Œé€‰ä¸­å’Œæ …æ ¼é£æ ¼
+	this->listCtrl.InsertColumn(0, _T("IPåœ°å€"), LVCFMT_CENTER, rect.Width() * 2 / 3 - 10, 0);
+	this->listCtrl.InsertColumn(1, _T("çŠ¶æ€"), LVCFMT_CENTER, rect.Width() / 3, 0);
 
 	char name[255];
 	WSADATA wsaData;
@@ -119,6 +119,7 @@ BOOL CSaveInternetAddictControlDlg::OnInitDialog()
 	WORD wVersionRequested;
 	wVersionRequested = MAKEWORD(2, 0);
 
+	//è·å–æœ¬åœ°IP
 	if (WSAStartup( wVersionRequested, &wsaData ) == 0) {
 		if( gethostname (name, sizeof(name)) == 0) {
 			if((hostinfo = gethostbyname(name)) != NULL) {
@@ -137,7 +138,7 @@ BOOL CSaveInternetAddictControlDlg::OnInitDialog()
 	((CButton*)GetDlgItem(IDC_RADIO6))->SetCheck(true);
 	((CButton*)GetDlgItem(IDC_RADIO8))->SetCheck(true);
 
-	return TRUE;  // ³ı·Ç½«½¹µãÉèÖÃµ½¿Ø¼ş£¬·ñÔò·µ»Ø TRUE
+	return TRUE;  // é™¤éå°†ç„¦ç‚¹è®¾ç½®åˆ°æ§ä»¶ï¼Œå¦åˆ™è¿”å› TRUE
 }
 
 void CSaveInternetAddictControlDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -153,19 +154,19 @@ void CSaveInternetAddictControlDlg::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 }
 
-// Èç¹ûÏò¶Ô»°¿òÌí¼Ó×îĞ¡»¯°´Å¥£¬ÔòĞèÒªÏÂÃæµÄ´úÂë
-//  À´»æÖÆ¸ÃÍ¼±ê¡£¶ÔÓÚÊ¹ÓÃÎÄµµ/ÊÓÍ¼Ä£ĞÍµÄ MFC Ó¦ÓÃ³ÌĞò£¬
-//  Õâ½«ÓÉ¿ò¼Ü×Ô¶¯Íê³É¡£
+// å¦‚æœå‘å¯¹è¯æ¡†æ·»åŠ æœ€å°åŒ–æŒ‰é’®ï¼Œåˆ™éœ€è¦ä¸‹é¢çš„ä»£ç 
+//  æ¥ç»˜åˆ¶è¯¥å›¾æ ‡ã€‚å¯¹äºä½¿ç”¨æ–‡æ¡£/è§†å›¾æ¨¡å‹çš„ MFC åº”ç”¨ç¨‹åºï¼Œ
+//  è¿™å°†ç”±æ¡†æ¶è‡ªåŠ¨å®Œæˆã€‚
 
 void CSaveInternetAddictControlDlg::OnPaint()
 {
 	if (IsIconic())
 	{
-		CPaintDC dc(this); // ÓÃÓÚ»æÖÆµÄÉè±¸ÉÏÏÂÎÄ
+		CPaintDC dc(this); // ç”¨äºç»˜åˆ¶çš„è®¾å¤‡ä¸Šä¸‹æ–‡
 
 		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
 
-		// Ê¹Í¼±êÔÚ¹¤×÷Çø¾ØĞÎÖĞ¾ÓÖĞ
+		// ä½¿å›¾æ ‡åœ¨å·¥ä½œåŒºçŸ©å½¢ä¸­å±…ä¸­
 		int cxIcon = GetSystemMetrics(SM_CXICON);
 		int cyIcon = GetSystemMetrics(SM_CYICON);
 		CRect rect;
@@ -173,7 +174,7 @@ void CSaveInternetAddictControlDlg::OnPaint()
 		int x = (rect.Width() - cxIcon + 1) / 2;
 		int y = (rect.Height() - cyIcon + 1) / 2;
 
-		// »æÖÆÍ¼±ê
+		// ç»˜åˆ¶å›¾æ ‡
 		dc.DrawIcon(x, y, m_hIcon);
 	}
 	else
@@ -182,37 +183,40 @@ void CSaveInternetAddictControlDlg::OnPaint()
 	}
 }
 
-//µ±ÓÃ»§ÍÏ¶¯×îĞ¡»¯´°¿ÚÊ±ÏµÍ³µ÷ÓÃ´Ëº¯ÊıÈ¡µÃ¹â±ê
-//ÏÔÊ¾¡£
+//å½“ç”¨æˆ·æ‹–åŠ¨æœ€å°åŒ–çª—å£æ—¶ç³»ç»Ÿè°ƒç”¨æ­¤å‡½æ•°å–å¾—å…‰æ ‡
+//æ˜¾ç¤ºã€‚
 HCURSOR CSaveInternetAddictControlDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
 
-void CSaveInternetAddictControlDlg::RefreshListCtrl()
+void CSaveInternetAddictControlDlg::RefreshListCtrl()                        //åˆ·æ–°åˆ—è¡¨ï¼Œå³å°†LANIPListä¸­çš„å†…å®¹é‡æ–°å†™å…¥åˆ°åˆ—è¡¨ä¸­
 {
 	bool state;
 	this->listCtrl.DeleteAllItems();
 	for (int i = 0; i < (int) this->LANIPList.size(); ++i) {
 		state = this->LANIPList[i].state;
-		this->listCtrl.InsertItem(i, this->LANIPList[i].ipAddress);
+		this->listCtrl.InsertItem(i, this->LANIPList[i].ipAddress);          //æ’å…¥æ–°çš„ä¸€é¡¹
 		if (state) {
-			this->listCtrl.SetItemText(i, 1, _T("ÔÚÏß"));
+			this->listCtrl.SetItemText(i, 1, _T("åœ¨çº¿"));
 		} else {
-			this->listCtrl.SetItemText(i, 1, _T("ÀëÏß"));
+			this->listCtrl.SetItemText(i, 1, _T("ç¦»çº¿"));
 		}
 	}
 }
 
-IPAddress CSaveInternetAddictControlDlg::ChangetoStruct(CString ipAddress)
+IPAddress CSaveInternetAddictControlDlg::ChangetoStruct(CString ipAddress)   //å°†CStringçš„IPè½¬åŒ–ä¸ºæœ¬åœ°å®¹æ˜“å¤„ç†çš„IP
 {
 	int pointIndex[3];
 	CString kindIP[4];
+
+	//æ‰¾åˆ°ä¸‰ä¸ªåˆ†éš”ç‚¹çš„ä½ç½®
 	pointIndex[0] = ipAddress.Find(_T("."), 0);
 	pointIndex[1] = ipAddress.Find(_T("."), pointIndex[0] + 1);
 	pointIndex[2] = ipAddress.Find(_T("."), pointIndex[1] + 1);
 
+	//åˆ†åˆ«åŒºåˆ†å››æ®µIP
 	kindIP[0] = ipAddress.Mid(0, pointIndex[0]);
 	kindIP[1] = ipAddress.Mid(pointIndex[0] + 1, pointIndex[1]);
 	kindIP[2] = ipAddress.Mid(pointIndex[1] + 1, pointIndex[2]);
@@ -226,16 +230,16 @@ IPAddress CSaveInternetAddictControlDlg::ChangetoStruct(CString ipAddress)
 	return ip;
 }
 
-bool CSaveInternetAddictControlDlg::CheckSubnetMask(IPAddress subnetMask)
+bool CSaveInternetAddictControlDlg::CheckSubnetMask(IPAddress subnetMask)    //æ£€æŸ¥å­ç½‘æ©ç æ˜¯å¦ç¬¦åˆè¦æ±‚
 {
 	int norm[9] = {0, 128, 192, 224, 240, 248, 252, 254, 255};
 	int index = 0;
-	while (index != 4 && subnetMask.kindAddress[index++] == 255) {}
+	while (index != 4 && subnetMask.kindAddress[index++] == 255) {}          //ä»å‰å‘åæ‰¾åˆ°ä¸ä¸º255çš„ä½ç½®ï¼Œå› ä¸ºå­ç½‘æ©ç å½¢ä¼¼255.255.255.0
 	index--;
 
 	while (index != 4) {
 		int i = 0;
-		for (; i < 9; ++i) {
+		for (; i < 9; ++i) {                                                 //æŸ¥çœ‹indexæ®µæ•°æ®æ˜¯å¦ç¬¦åˆå­ç½‘æ©ç çš„æ ‡å‡†
 			if (norm[i] == subnetMask.kindAddress[index]) {
 				break;
 			}
@@ -248,28 +252,22 @@ bool CSaveInternetAddictControlDlg::CheckSubnetMask(IPAddress subnetMask)
 	return true;
 }
 
-vector<IPAddress> CSaveInternetAddictControlDlg::GetDomainIP(IPAddress begin, IPAddress end)
+vector<IPAddress> CSaveInternetAddictControlDlg::GetDomainIP(IPAddress begin, IPAddress end)       //å°†beginåˆ°endä¸­é—´çš„æ‰€æœ‰IPä¿å­˜è¿›vector
 {
-	int index = 0;
-	while (begin.kindAddress[index] == end.kindAddress[index]) {
-		index++;
-	}
-	index--;
-
 	vector<IPAddress> ipAddress;
 	while (true) {
 		if (begin.kindAddress[0] == end.kindAddress[0] &&
 			begin.kindAddress[1] == end.kindAddress[1] &&
 			begin.kindAddress[2] == end.kindAddress[2] &&
-			begin.kindAddress[3] == end.kindAddress[3]) {
+			begin.kindAddress[3] == end.kindAddress[3]) {                    //å½“begin=endæ—¶ï¼Œåˆ™è¡¨ç¤ºåˆ°äº†ç»“å°¾
 				break;
 		}
 
 		ipAddress.push_back(begin);
 
 		for (int i = 3; i >= 0; --i) {
-			begin.kindAddress[i] += 1;
-			if (begin.kindAddress[i] == 256) {
+			begin.kindAddress[i] += 1;                                       //æ•°æ®ä»æœ«å°¾å¼€å§‹é€ä¸ª+1
+			if (begin.kindAddress[i] == 256) {                               //é€¢256è¿›1
 				begin.kindAddress[i] = 0;
 			} else {
 				break;
@@ -280,11 +278,11 @@ vector<IPAddress> CSaveInternetAddictControlDlg::GetDomainIP(IPAddress begin, IP
 	return ipAddress;
 }
 
-void CSaveInternetAddictControlDlg::GetBroadcastDomain(IPAddress ip, IPAddress subnetMask, IPAddress &begin, IPAddress &end)
+void CSaveInternetAddictControlDlg::GetBroadcastDomain(IPAddress ip, IPAddress subnetMask, IPAddress &begin, IPAddress &end)     //æ ¹æ®IPåœ°å€å’Œå­ç½‘æ©ç è·å–å¼€å§‹IPå’Œç»“æŸIP
 {
 	int index = 0;
 	for (int i = 0; i < 4; ++i) {
-		if (subnetMask.kindAddress[i] == 255) {
+		if (subnetMask.kindAddress[i] == 255) {                              //ç”±äºæ˜¯æŒ‰ä½ä¸ï¼Œæ‰€ä»¥å­ç½‘æ©ç æ¯ä¸ªä¸º255çš„åˆ™ä¸å˜
 			begin.kindAddress[i] = ip.kindAddress[i];
 			end.kindAddress[i] = ip.kindAddress[i];
 		} else {
@@ -295,14 +293,14 @@ void CSaveInternetAddictControlDlg::GetBroadcastDomain(IPAddress ip, IPAddress s
 
 	if (index < 4) {
 		int baseNumber = 0;
-		for (int i = 7; i >= 0; --i) {
+		for (int i = 7; i >= 0; --i) {                                       //æ‰¾å¯»åŸºæ•°
 			if ((baseNumber + (int) pow((double) 2, i)) > subnetMask.kindAddress[index]) {
 				break;
 			} else {
 				baseNumber += (int) pow((double) 2, i);
 			}
 		}
-		int endNumber = baseNumber + (256 - subnetMask.kindAddress[index]) - 1;
+		int endNumber = baseNumber + (256 - subnetMask.kindAddress[index]) - 1;        //æœ«å°¾æ•°ä¸ºåŸºæ•°+ï¼ˆ256 - å­ç½‘æ©ç æ®µ -1ï¼‰
 		begin.kindAddress[index] = baseNumber;
 		end.kindAddress[index] = endNumber;
 	}
@@ -313,13 +311,13 @@ void CSaveInternetAddictControlDlg::GetBroadcastDomain(IPAddress ip, IPAddress s
 	}
 }
 
-void CSaveInternetAddictControlDlg::OnBnClickedButton1()
+void CSaveInternetAddictControlDlg::OnBnClickedButton1()                     //æ˜¾ç¤ºèŒƒå›´å†…çš„IP
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	CString subnetMask;
 	GetDlgItem(IDC_IPADDRESS2)->GetWindowText(subnetMask);
 	if (!this->CheckSubnetMask(this->ChangetoStruct(subnetMask))) {
-		MessageBoxW(_T("ÇëÊ¹ÓÃÕıÈ·µÄ×ÓÍøÑÚÂë£¡"), _T("´íÎó£¡"), MB_ICONHAND);
+		MessageBoxW(_T("è¯·ä½¿ç”¨æ­£ç¡®çš„å­ç½‘æ©ç ï¼"), _T("é”™è¯¯ï¼"), MB_ICONHAND);
 		GetDlgItem(IDC_IPADDRESS2)->SetWindowText((CString)("255.255.255.0"));
 		return ;
 	}
@@ -342,13 +340,13 @@ void CSaveInternetAddictControlDlg::OnBnClickedButton1()
 
 void CSaveInternetAddictControlDlg::OnBnClickedButton2()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 }
 
 
 void CSaveInternetAddictControlDlg::OnBnClickedButton3()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	CString addIpAddress;
 	GetDlgItem(IDC_IPADDRESS3)->GetWindowText(addIpAddress);
 	for (int i = 0; i < (int) this->LANIPList.size(); ++i) {
@@ -365,5 +363,5 @@ void CSaveInternetAddictControlDlg::OnBnClickedButton3()
 
 void CSaveInternetAddictControlDlg::OnBnClickedButton4()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 }

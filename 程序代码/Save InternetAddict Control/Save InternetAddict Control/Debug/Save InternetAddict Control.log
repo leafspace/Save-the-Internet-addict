@@ -1,4 +1,4 @@
-﻿生成启动时间为 2017/8/17 20:52:03。
+﻿生成启动时间为 2017/8/17 21:11:09。
      1>项目“F:\Project Engineering\Save Internet addict\程序代码\Save InternetAddict Control\Save InternetAddict Control\Save InternetAddict Control.vcxproj”在节点 2 上(build 个目标)。
      1>InitializeBuildStatus:
          正在创建“Debug\Save InternetAddict Control.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
@@ -7,11 +7,10 @@
          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\Save InternetAddict Control.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt "Save InternetAddict Control.cpp" "Save InternetAddict ControlDlg.cpp"
          Save InternetAddict ControlDlg.cpp
          正在生成代码...
-         正在编译...
+         正在跳过...(未检测到相关更改)
          Save InternetAddict Control.cpp
-         正在生成代码...
        ResourceCompile:
-         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /D _DEBUG /D _UNICODE /D UNICODE /l"0x0804" /IDebug\ /nologo /fo"Debug\Save InternetAddict Control.res" "Save InternetAddict Control.rc" 
+         所有输出均为最新。
        ManifestResourceCompile:
          所有输出均为最新。
        Link:
@@ -33,4 +32,4 @@
 
 生成成功。
 
-已用时间 00:00:02.21
+已用时间 00:00:02.02
