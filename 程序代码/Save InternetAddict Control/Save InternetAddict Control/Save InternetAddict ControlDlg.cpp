@@ -67,6 +67,7 @@ BEGIN_MESSAGE_MAP(CSaveInternetAddictControlDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON1, &CSaveInternetAddictControlDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CSaveInternetAddictControlDlg::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON3, &CSaveInternetAddictControlDlg::OnBnClickedButton3)
+	ON_BN_CLICKED(IDC_BUTTON4, &CSaveInternetAddictControlDlg::OnBnClickedButton4)
 END_MESSAGE_MAP()
 
 
@@ -108,7 +109,7 @@ BOOL CSaveInternetAddictControlDlg::OnInitDialog()
 	this->listCtrl.GetClientRect(&rect);                                     //获取编程语言列表视图控件的位置和大小
 	this->listCtrl.SetExtendedStyle(this->listCtrl.GetExtendedStyle()
 		| LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);                          //为列表视图控件添加全行选中和栅格风格
-	this->listCtrl.InsertColumn(0, _T("IP地址"), LVCFMT_CENTER, rect.Width() * 2 / 3, 0);
+	this->listCtrl.InsertColumn(0, _T("IP地址"), LVCFMT_CENTER, rect.Width() * 2 / 3 - 10, 0);
 	this->listCtrl.InsertColumn(1, _T("状态"), LVCFMT_CENTER, rect.Width() / 3, 0);
 
 	char name[255];
@@ -204,16 +205,148 @@ void CSaveInternetAddictControlDlg::RefreshListCtrl()
 	}
 }
 
+IPAddress CSaveInternetAddictControlDlg::ChangetoStruct(CString ipAddress)
+{
+	int pointIndex[3];
+	CString kindIP[4];
+	pointIndex[0] = ipAddress.Find(_T("."), 0);
+	pointIndex[1] = ipAddress.Find(_T("."), pointIndex[0] + 1);
+	pointIndex[2] = ipAddress.Find(_T("."), pointIndex[1] + 1);
+
+	kindIP[0] = ipAddress.Mid(0, pointIndex[0]);
+	kindIP[1] = ipAddress.Mid(pointIndex[0] + 1, pointIndex[1]);
+	kindIP[2] = ipAddress.Mid(pointIndex[1] + 1, pointIndex[2]);
+	kindIP[3] = ipAddress.Mid(pointIndex[2] + 1);
+
+	IPAddress ip(0, 0, 0, 0);
+	ip.kindAddress[0] = _ttoi(kindIP[0]);
+	ip.kindAddress[1] = _ttoi(kindIP[1]);
+	ip.kindAddress[2] = _ttoi(kindIP[2]);
+	ip.kindAddress[3] = _ttoi(kindIP[3]);
+	return ip;
+}
+
+bool CSaveInternetAddictControlDlg::CheckSubnetMask(IPAddress subnetMask)
+{
+	int norm[9] = {0, 128, 192, 224, 240, 248, 252, 254, 255};
+	int index = 0;
+	while (index != 4 && subnetMask.kindAddress[index++] == 255) {}
+	index--;
+
+	while (index != 4) {
+		int i = 0;
+		for (; i < 9; ++i) {
+			if (norm[i] == subnetMask.kindAddress[index]) {
+				break;
+			}
+		}
+		if (i == 9) {
+			return false;
+		}
+		index++;
+	}
+	return true;
+}
+
+vector<IPAddress> CSaveInternetAddictControlDlg::GetDomainIP(IPAddress begin, IPAddress end)
+{
+	int index = 0;
+	while (begin.kindAddress[index] == end.kindAddress[index]) {
+		index++;
+	}
+	index--;
+
+	vector<IPAddress> ipAddress;
+	while (true) {
+		if (begin.kindAddress[0] == end.kindAddress[0] &&
+			begin.kindAddress[1] == end.kindAddress[1] &&
+			begin.kindAddress[2] == end.kindAddress[2] &&
+			begin.kindAddress[3] == end.kindAddress[3]) {
+				break;
+		}
+
+		ipAddress.push_back(begin);
+
+		for (int i = 3; i >= 0; --i) {
+			begin.kindAddress[i] += 1;
+			if (begin.kindAddress[i] == 256) {
+				begin.kindAddress[i] = 0;
+			} else {
+				break;
+			}
+		}
+
+	}
+	return ipAddress;
+}
+
+void CSaveInternetAddictControlDlg::GetBroadcastDomain(IPAddress ip, IPAddress subnetMask, IPAddress &begin, IPAddress &end)
+{
+	int index = 0;
+	for (int i = 0; i < 4; ++i) {
+		if (subnetMask.kindAddress[i] == 255) {
+			begin.kindAddress[i] = ip.kindAddress[i];
+			end.kindAddress[i] = ip.kindAddress[i];
+		} else {
+			index = i;
+			break;
+		}
+	}
+
+	if (index < 4) {
+		int baseNumber = 0;
+		for (int i = 7; i >= 0; --i) {
+			if ((baseNumber + (int) pow((double) 2, i)) > subnetMask.kindAddress[index]) {
+				break;
+			} else {
+				baseNumber += (int) pow((double) 2, i);
+			}
+		}
+		int endNumber = baseNumber + (256 - subnetMask.kindAddress[index]) - 1;
+		begin.kindAddress[index] = baseNumber;
+		end.kindAddress[index] = endNumber;
+	}
+
+	for (int i = index + 1; i < 4; ++i) {
+		begin.kindAddress[i] = 0;
+		end.kindAddress[i] = 255;
+	}
+}
+
 void CSaveInternetAddictControlDlg::OnBnClickedButton1()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	CString subnetMask;
+	GetDlgItem(IDC_IPADDRESS2)->GetWindowText(subnetMask);
+	if (!this->CheckSubnetMask(this->ChangetoStruct(subnetMask))) {
+		MessageBoxW(_T("请使用正确的子网掩码！"), _T("错误！"), MB_ICONHAND);
+		GetDlgItem(IDC_IPADDRESS2)->SetWindowText((CString)("255.255.255.0"));
+		return ;
+	}
 
+	CString ipAddress;
+	IPAddress begin(0, 0, 0, 0), end(0, 0, 0, 0);
+	GetDlgItem(IDC_IPADDRESS1)->GetWindowText(ipAddress);
+	this->GetBroadcastDomain(this->ChangetoStruct(ipAddress), this->ChangetoStruct(subnetMask), begin, end);
+
+	this->LANIPList.clear();
+	vector<IPAddress> domainIP = this->GetDomainIP(begin, end);
+	for (int i = 0; i < (int) domainIP.size(); ++i) {
+		IPItem item(domainIP[i].toCString(), false);
+		this->LANIPList.push_back(item);
+	}
 
 	this->RefreshListCtrl();
 }
 
 
 void CSaveInternetAddictControlDlg::OnBnClickedButton2()
+{
+	// TODO: 在此添加控件通知处理程序代码
+}
+
+
+void CSaveInternetAddictControlDlg::OnBnClickedButton3()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	CString addIpAddress;
@@ -230,7 +363,7 @@ void CSaveInternetAddictControlDlg::OnBnClickedButton2()
 }
 
 
-void CSaveInternetAddictControlDlg::OnBnClickedButton3()
+void CSaveInternetAddictControlDlg::OnBnClickedButton4()
 {
 	// TODO: 在此添加控件通知处理程序代码
 }
