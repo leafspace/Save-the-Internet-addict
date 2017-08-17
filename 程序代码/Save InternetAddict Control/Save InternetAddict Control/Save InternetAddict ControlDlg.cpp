@@ -57,12 +57,16 @@ CSaveInternetAddictControlDlg::CSaveInternetAddictControlDlg(CWnd* pParent /*=NU
 void CSaveInternetAddictControlDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_LIST1, listCtrl);
 }
 
 BEGIN_MESSAGE_MAP(CSaveInternetAddictControlDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_BUTTON1, &CSaveInternetAddictControlDlg::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON2, &CSaveInternetAddictControlDlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON3, &CSaveInternetAddictControlDlg::OnBnClickedButton3)
 END_MESSAGE_MAP()
 
 
@@ -98,6 +102,39 @@ BOOL CSaveInternetAddictControlDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+
+	CRect rect;
+	this->listCtrl.GetHeaderCtrl()->EnableWindow(false);                     //固定标题不被移动
+	this->listCtrl.GetClientRect(&rect);                                     //获取编程语言列表视图控件的位置和大小
+	this->listCtrl.SetExtendedStyle(this->listCtrl.GetExtendedStyle()
+		| LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);                          //为列表视图控件添加全行选中和栅格风格
+	this->listCtrl.InsertColumn(0, _T("IP地址"), LVCFMT_CENTER, rect.Width() * 2 / 3, 0);
+	this->listCtrl.InsertColumn(1, _T("状态"), LVCFMT_CENTER, rect.Width() / 3, 0);
+
+	char name[255];
+	WSADATA wsaData;
+	CString ipAddress;
+	PHOSTENT hostinfo;
+	WORD wVersionRequested;
+	wVersionRequested = MAKEWORD(2, 0);
+
+	if (WSAStartup( wVersionRequested, &wsaData ) == 0) {
+		if( gethostname (name, sizeof(name)) == 0) {
+			if((hostinfo = gethostbyname(name)) != NULL) {
+				ipAddress = inet_ntoa(*(struct in_addr *)*hostinfo->h_addr_list);
+			}
+		}
+		WSACleanup();
+	}
+	GetDlgItem(IDC_IPADDRESS1)->SetWindowText(ipAddress);
+	GetDlgItem(IDC_IPADDRESS2)->SetWindowText((CString)("255.255.255.0"));
+	GetDlgItem(IDC_IPADDRESS3)->SetWindowText(ipAddress);
+
+	GetDlgItem(IDC_EDIT1)->SetWindowText((CString)("0"));
+	((CButton*)GetDlgItem(IDC_RADIO1))->SetCheck(true);
+	((CButton*)GetDlgItem(IDC_RADIO4))->SetCheck(true);
+	((CButton*)GetDlgItem(IDC_RADIO6))->SetCheck(true);
+	((CButton*)GetDlgItem(IDC_RADIO8))->SetCheck(true);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -151,3 +188,49 @@ HCURSOR CSaveInternetAddictControlDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+void CSaveInternetAddictControlDlg::RefreshListCtrl()
+{
+	bool state;
+	this->listCtrl.DeleteAllItems();
+	for (int i = 0; i < (int) this->LANIPList.size(); ++i) {
+		state = this->LANIPList[i].state;
+		this->listCtrl.InsertItem(i, this->LANIPList[i].ipAddress);
+		if (state) {
+			this->listCtrl.SetItemText(i, 1, _T("在线"));
+		} else {
+			this->listCtrl.SetItemText(i, 1, _T("离线"));
+		}
+	}
+}
+
+void CSaveInternetAddictControlDlg::OnBnClickedButton1()
+{
+	// TODO: 在此添加控件通知处理程序代码
+
+
+	this->RefreshListCtrl();
+}
+
+
+void CSaveInternetAddictControlDlg::OnBnClickedButton2()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CString addIpAddress;
+	GetDlgItem(IDC_IPADDRESS3)->GetWindowText(addIpAddress);
+	for (int i = 0; i < (int) this->LANIPList.size(); ++i) {
+		if (this->LANIPList[i].ipAddress == addIpAddress) {
+			return;
+		}
+	}
+	IPItem ipItem(addIpAddress, false);
+	this->LANIPList.push_back(ipItem);
+
+	this->RefreshListCtrl();
+}
+
+
+void CSaveInternetAddictControlDlg::OnBnClickedButton3()
+{
+	// TODO: 在此添加控件通知处理程序代码
+}

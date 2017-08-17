@@ -3,6 +3,21 @@
 //
 
 #pragma once
+#include "afxcmn.h"
+
+#include <vector>
+using namespace std;
+
+typedef struct IPItem
+{
+	CString ipAddress;
+	bool state;
+
+	IPItem(CString ipAddress, bool state) {
+		this->ipAddress = ipAddress;
+		this->state = state;
+	}
+}IPItem;
 
 
 // CSaveInternetAddictControlDlg ¶Ô»°¿ò
@@ -29,4 +44,14 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
+
+private:
+	vector<IPItem> LANIPList;
+
+	void RefreshListCtrl();
+public:
+	CListCtrl listCtrl;
+	afx_msg void OnBnClickedButton1();
+	afx_msg void OnBnClickedButton2();
+	afx_msg void OnBnClickedButton3();
 };
