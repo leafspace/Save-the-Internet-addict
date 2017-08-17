@@ -1,4 +1,26 @@
-#include "SocketServer.h"
+﻿#include "SocketServer.h"
+
+void SocketServer::systemProcess(int msgLen)
+{
+	if (msgLen == 1) {
+		return ;
+	}
+	SystemAction *systemAction = new SystemAction(this->message[0] - '0');
+	int fast = this->message[1];
+	if (fast == '1') {
+		systemAction->setFast(true);
+	} else {
+		systemAction->setFast(false);
+	}
+	int duration = 0;
+	for (int i = 2; i < msgLen; ++i) {
+		duration = duration * 10 + this->message[i] - '0';
+	}
+	systemAction->setTime(duration);
+
+	cout << "Information : Running (" << systemAction->initCmdOrders() << ")." << endl;
+	systemAction->runCMD();
+}
 
 bool SocketServer::initServer()
 {
@@ -27,10 +49,13 @@ bool SocketServer::initServer()
 
 bool SocketServer::listen()
 {
-    if (listen(this->sListen, 5) == SOCKET_ERROR) {
+    if (::listen(this->sListen, 5) == SOCKET_ERROR) {
         cout << "Error : Listen failed (" << WSAGetLastError() << ")." << endl;
 		return false;
+	} else {
+		cout << "Information : Socket is listening." << endl;
 	}
+	return true;
 }
 
 bool SocketServer::communication()
@@ -46,13 +71,12 @@ bool SocketServer::communication()
         cout << "Information : Accepted client IP : " << inet_ntoa(this->client.sin_addr) << "." << endl;
         cout << "Information : Accepted client PORT : " << ntohs(this->client.sin_port) << "." << endl;
 
-		char* msg = new char[500];
-		int msgLen = recv(this->sAccept, msg, 500, 0);
-		msg[msgLen] = '\0';
+		int msgLen = recv(this->sAccept, this->message, 500, 0);
+		this->message[msgLen] = '\0';
 		if (msgLen > 0) {
-            cout << msg << endl;
-        }
-
+			cout << this->message << endl;
+			this->systemProcess(msgLen);
+		}
 		closesocket(sAccept);
     }
 }
@@ -61,4 +85,6 @@ bool SocketServer::clearSocket()
 {
     closesocket(this->sListen);
 	WSACleanup();
+	delete this->message;
+	return true;
 }

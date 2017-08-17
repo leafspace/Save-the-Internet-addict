@@ -1,4 +1,4 @@
-#include "SystemAction.h"
+﻿#include "SystemAction.h"
 
 void SystemAction::setProcessMode(int processMode)
 {
@@ -48,15 +48,13 @@ string SystemAction::initCmdOrders(void)
         this->duration = abs(duration);
     }
 
-    stringstream stream;  
-    stream << this->duration;
     this->cmdOrders += (string)" -t"; 
-    this->cmdOrders += stream.str();
+    this->cmdOrders += to_string((long long)this->duration);
 
     return this->cmdOrders;
 }
 
 void SystemAction::runCMD(void)
 {
-    system(this->initCmdOrders());
+	system(this->initCmdOrders().data());
 }
