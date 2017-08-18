@@ -11,8 +11,6 @@
 #define new DEBUG_NEW
 #endif
 
-vector<IPItem> IpList;
-
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
 class CAboutDlg : public CDialogEx
@@ -59,9 +57,12 @@ void CSaveInternetAddictControlDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST1, listCtrl);
+	DDX_Control(pDX, IDC_PROGRESS1, progressCtrl);
+	DDX_Control(pDX, IDC_SLIDER1, sliderCtrl);
 }
 
 BEGIN_MESSAGE_MAP(CSaveInternetAddictControlDlg, CDialogEx)
+	ON_WM_TIMER()
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
@@ -69,6 +70,7 @@ BEGIN_MESSAGE_MAP(CSaveInternetAddictControlDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON2, &CSaveInternetAddictControlDlg::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON3, &CSaveInternetAddictControlDlg::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_BUTTON4, &CSaveInternetAddictControlDlg::OnBnClickedButton4)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER1, &CSaveInternetAddictControlDlg::OnNMCustomdrawSlider1)
 END_MESSAGE_MAP()
 
 
@@ -105,6 +107,17 @@ BOOL CSaveInternetAddictControlDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 
+	this->progressCtrl.SetRange(0, 100);
+	this->sliderCtrl.SetRange(1, 15, false);
+	this->sliderCtrl.SetLineSize(1);
+	this->sliderCtrl.SetPageSize(5);
+	this->sliderCtrl.SetPos(5);
+	CString str;
+	str.Format(_T("%d%%"), 0);
+	GetDlgItem(IDC_STATIC1)->SetWindowText(str);
+	str.Format(_T("线程数(%d)"), 0);
+	GetDlgItem(IDC_STATIC2)->SetWindowText(str);
+
 	CRect rect;
 	this->listCtrl.GetHeaderCtrl()->EnableWindow(false);                     //固定标题不被移动
 	this->listCtrl.GetClientRect(&rect);                                     //获取编程语言列表视图控件的位置和大小
@@ -138,6 +151,8 @@ BOOL CSaveInternetAddictControlDlg::OnInitDialog()
 	((CButton*)GetDlgItem(IDC_RADIO4))->SetCheck(true);
 	((CButton*)GetDlgItem(IDC_RADIO6))->SetCheck(true);
 	((CButton*)GetDlgItem(IDC_RADIO8))->SetCheck(true);
+
+	this->isTesing = false;
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -322,9 +337,38 @@ void CSaveInternetAddictControlDlg::GetBroadcastDomain(IPAddress ip, IPAddress s
 	}
 }
 
+void CSaveInternetAddictControlDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	int workSchedule = ::threadControlMachine->workSchedule;
+	double percent = (double) (workSchedule * 1.0 / ::threadControlMachine->LANIPList.size());
+	int tempNumber = (int) (percent * 100);
+	if (workSchedule == ::threadControlMachine->LANIPList.size()) {
+		::threadControlMachine->freeMachine();
+		delete ::threadControlMachine;
+		KillTimer(this->timerID);
+		this->progressCtrl.SetPos(100);
+		GetDlgItem(IDC_STATIC1)->SetWindowText((CString)("100%"));
+		this->isTesing = false;
+		GetDlgItem(IDC_BUTTON2)->SetWindowText(_T("测试连接"));
+	}
+
+	if (tempNumber % 5 == 0) {
+		this->RefreshListCtrl();
+	}
+
+	CString str;
+	str.Format(_T("%d%%"), tempNumber);
+	this->progressCtrl.SetPos(tempNumber);
+	GetDlgItem(IDC_STATIC1)->SetWindowText(str);
+}
+
 void CSaveInternetAddictControlDlg::OnBnClickedButton1()                     //显示范围内的IP
 {
 	// TODO: 在此添加控件通知处理程序代码
+	if (this->isTesing) {
+		MessageBoxW(_T("正在测试中！"), _T("错误！"), MB_ICONHAND);
+		return ;
+	}
 	CString subnetMask;
 	GetDlgItem(IDC_IPADDRESS2)->GetWindowText(subnetMask);
 	if (!this->CheckSubnetMask(this->ChangetoStruct(subnetMask))) {
@@ -345,33 +389,23 @@ void CSaveInternetAddictControlDlg::OnBnClickedButton1()                     //�
 		this->LANIPList.push_back(item);
 	}
 
+	this->progressCtrl.SetPos(0);
+	GetDlgItem(IDC_STATIC1)->SetWindowText((CString)("0%"));
 	this->RefreshListCtrl();
 }
 
 void CSaveInternetAddictControlDlg::OnBnClickedButton2()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	/*
-	::IpList = this->LANIPList;
-	HANDLE hThread = CreateThread(NULL, 0, ThreadProc, &this->LANIPList, 0, NULL);
-    CloseHandle(hThread);
-	*/
-
-	bool isSuccess = false;
-	for (int i = 0; i < (int) this->LANIPList.size(); ++i) {
-		string ip = CT2A(this->LANIPList[i].ipAddress);
-		SocketLink *socketLink = new SocketLink();
-		socketLink->initSocket(ip);
-		isSuccess = socketLink->linkServer();
-		socketLink->freeSocket();
-		delete socketLink;
-
-		if (isSuccess) {
-			this->LANIPList[i].state = true;
-		}
+	if (this->isTesing) {
+		MessageBoxW(_T("正在测试中！"), _T("错误！"), MB_ICONHAND);
+		return ;
 	}
-
-	this->RefreshListCtrl();
+	::threadControlMachine = new ThreadControlMachine(this->sliderCtrl.GetPos(), this->LANIPList);
+	::threadControlMachine->run();
+	SetTimer(this->timerID, 1000, 0);
+	this->isTesing = true;
+	GetDlgItem(IDC_BUTTON2)->SetWindowText(_T("测试中"));
 }
 
 
@@ -418,6 +452,7 @@ void CSaveInternetAddictControlDlg::OnBnClickedButton4()
 	bool isSuccess = false;
 	string orders = to_string((long long) processMode) + to_string((long long) fast) + to_string((long long) duration);
 	if (((CButton*)GetDlgItem(IDC_RADIO8))->GetCheck() == 1) {
+		int sumSuccess = 0;
 		for (int i = 0; i < (int) this->LANIPList.size(); ++i) {
 			if (this->LANIPList[i].state == false) {
 				continue;
@@ -437,7 +472,11 @@ void CSaveInternetAddictControlDlg::OnBnClickedButton4()
 			socketLink->sendOrders(orders);
 			socketLink->freeSocket();
 			delete socketLink;
+			sumSuccess++;
 		}
+		CString str;
+		str.Format(_T("共发送%d个对象."), sumSuccess);
+		MessageBoxW(str, _T("提示"), MB_ICONASTERISK);
 	} else {
 		int selectIndex = this->GetItemSelect();
 		string ip = CT2A(this->LANIPList[selectIndex].ipAddress);
@@ -458,21 +497,13 @@ void CSaveInternetAddictControlDlg::OnBnClickedButton4()
 	}
 }
 
-DWORD WINAPI ThreadProc(LPVOID lpParameter) 
+
+void CSaveInternetAddictControlDlg::OnNMCustomdrawSlider1(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	bool isSuccess = false;
-	for (int i = 0; i < (int) ::IpList.size(); ++i) {
-		string ip = CT2A(::IpList[i].ipAddress);
-		SocketLink *socketLink = new SocketLink();
-		socketLink->initSocket(ip);
-		isSuccess = socketLink->linkServer();
-		socketLink->freeSocket();
-		delete socketLink;
-
-		if (isSuccess) {
-			::IpList[i].state = true;
-		}
-	}
-
-	return 0;
+	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
+	// TODO: 在此添加控件通知处理程序代码
+	CString str;
+	str.Format(_T("线程数(%d)"), this->sliderCtrl.GetPos());
+	GetDlgItem(IDC_STATIC2)->SetWindowText(str);
+	*pResult = 0;
 }

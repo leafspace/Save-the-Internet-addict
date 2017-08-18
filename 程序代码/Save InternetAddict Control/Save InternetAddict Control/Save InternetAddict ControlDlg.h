@@ -6,37 +6,10 @@
 #include "afxcmn.h"
 
 #include <vector>
+#include "StructInfo.h"
 #include "SocketLink.h"
+#include "ThreadControlMachine.h"
 using namespace std;
-
-typedef struct IPItem
-{
-	CString ipAddress;
-	bool state;
-
-	IPItem(CString ipAddress, bool state) {
-		this->ipAddress = ipAddress;
-		this->state = state;
-	}
-}IPItem;
-
-typedef struct IPAddress
-{
-	int kindAddress[4];
-
-	IPAddress(int kindA, int kindB, int kindC, int kindD) {
-		this->kindAddress[0] = kindA;
-		this->kindAddress[1] = kindB;
-		this->kindAddress[2] = kindC;
-		this->kindAddress[3] = kindD;
-	}
-
-	CString toCString() {
-		CString str;
-		str.Format(_T("%d.%d.%d.%d"), this->kindAddress[0], this->kindAddress[1], this->kindAddress[2], this->kindAddress[3]);
-		return str;
-	}
-}IPAddress;
 
 
 // CSaveInternetAddictControlDlg 对话框
@@ -65,7 +38,10 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+	int timerID;
 	vector<IPItem> LANIPList;                                                //IP列表中显示的内容
+
+	bool isTesing;
 
 	int GetItemSelect();                                                     //获取某个listControl当前选中项的行号
 	void RefreshListCtrl();                                                  //刷新列表，即将LANIPList中的内容重新写入到列表中
@@ -75,12 +51,12 @@ private:
 	void GetBroadcastDomain(IPAddress ip, IPAddress subnetMask, IPAddress &begin, IPAddress &end); //根据IP地址和子网掩码获取开始IP和结束IP
 public:
 	CListCtrl listCtrl;
+	CSliderCtrl sliderCtrl;
+	CProgressCtrl progressCtrl;
+	void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnBnClickedButton1();                                       //显示范围内的IP
 	afx_msg void OnBnClickedButton2();                                       //将范围内的IP进行连接测试
 	afx_msg void OnBnClickedButton3();                                       //添加一个指定IP
 	afx_msg void OnBnClickedButton4();                                       //进行操作处理
+	afx_msg void OnNMCustomdrawSlider1(NMHDR *pNMHDR, LRESULT *pResult);
 };
-
-extern vector<IPItem> IpList;
-
-DWORD WINAPI ThreadProc(LPVOID lpParameter);
