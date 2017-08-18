@@ -318,17 +318,15 @@ void CSaveInternetAddictControlDlg::GetBroadcastDomain(IPAddress ip, IPAddress s
 	}
 
 	if (index < 4) {
-		int baseNumber = 0;
-		for (int i = 7; i >= 0; --i) {                                       //找寻基数
-			if ((baseNumber + (int) pow((double) 2, i)) > subnetMask.kindAddress[index]) {
-				break;
-			} else {
-				baseNumber += (int) pow((double) 2, i);
+		int baseNumber = 256 - subnetMask.kindAddress[index];
+		for (int i = 0; i < 256 / baseNumber; ++i) {
+			if (ip.kindAddress[index] > i * baseNumber &&
+				ip.kindAddress[index] < (i + 1) * baseNumber) {
+					begin.kindAddress[index] = i * baseNumber;
+					end.kindAddress[index] = (i + 1) * baseNumber - 1;
+					break;
 			}
 		}
-		int endNumber = baseNumber + (256 - subnetMask.kindAddress[index]) - 1;        //末尾数为基数+（256 - 子网掩码段 -1）
-		begin.kindAddress[index] = baseNumber;
-		end.kindAddress[index] = endNumber;
 	}
 
 	for (int i = index + 1; i < 4; ++i) {
