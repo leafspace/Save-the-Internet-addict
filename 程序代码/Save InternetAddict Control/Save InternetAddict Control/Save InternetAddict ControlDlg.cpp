@@ -11,6 +11,7 @@
 #define new DEBUG_NEW
 #endif
 
+vector<IPItem> IpList;
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
@@ -109,7 +110,7 @@ BOOL CSaveInternetAddictControlDlg::OnInitDialog()
 	this->listCtrl.GetClientRect(&rect);                                     //获取编程语言列表视图控件的位置和大小
 	this->listCtrl.SetExtendedStyle(this->listCtrl.GetExtendedStyle()
 		| LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);                          //为列表视图控件添加全行选中和栅格风格
-	this->listCtrl.InsertColumn(0, _T("IP地址"), LVCFMT_CENTER, rect.Width() * 2 / 3 - 10, 0);
+	this->listCtrl.InsertColumn(0, _T("IP地址"), LVCFMT_CENTER, rect.Width() * 2 / 3 - 5, 0);
 	this->listCtrl.InsertColumn(1, _T("状态"), LVCFMT_CENTER, rect.Width() / 3, 0);
 
 	char name[255];
@@ -190,6 +191,16 @@ HCURSOR CSaveInternetAddictControlDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+int CSaveInternetAddictControlDlg::GetItemSelect()                           //获取某个listControl当前选中项的行号
+{
+	int count = this->listCtrl.GetItemCount();
+	for (int i = 0; i < count; ++i) {
+		if (this->listCtrl.GetItemState(i, LVIS_SELECTED) == LVIS_SELECTED) {
+				return i;
+		}
+	}
+	return -1;
+}
 
 void CSaveInternetAddictControlDlg::RefreshListCtrl()                        //刷新列表，即将LANIPList中的内容重新写入到列表中
 {
@@ -337,10 +348,30 @@ void CSaveInternetAddictControlDlg::OnBnClickedButton1()                     //�
 	this->RefreshListCtrl();
 }
 
-
 void CSaveInternetAddictControlDlg::OnBnClickedButton2()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	/*
+	::IpList = this->LANIPList;
+	HANDLE hThread = CreateThread(NULL, 0, ThreadProc, &this->LANIPList, 0, NULL);
+    CloseHandle(hThread);
+	*/
+
+	bool isSuccess = false;
+	for (int i = 0; i < (int) this->LANIPList.size(); ++i) {
+		string ip = CT2A(this->LANIPList[i].ipAddress);
+		SocketLink *socketLink = new SocketLink();
+		socketLink->initSocket(ip);
+		isSuccess = socketLink->linkServer();
+		socketLink->freeSocket();
+		delete socketLink;
+
+		if (isSuccess) {
+			this->LANIPList[i].state = true;
+		}
+	}
+
+	this->RefreshListCtrl();
 }
 
 
@@ -364,4 +395,84 @@ void CSaveInternetAddictControlDlg::OnBnClickedButton3()
 void CSaveInternetAddictControlDlg::OnBnClickedButton4()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	int processMode = 1;
+	for (int i = IDC_RADIO1; i <= IDC_RADIO3; ++i) {
+		if (((CButton*)GetDlgItem(i))->GetCheck() == 1) {
+			processMode = i - IDC_RADIO1 + 1;
+			break;
+		}
+	}
+
+	int fast = 1;
+	if (((CButton*)GetDlgItem(IDC_RADIO4))->GetCheck() != 1) {
+		fast = 0;
+	}
+	
+	int duration = 0;
+	if (((CButton*)GetDlgItem(IDC_RADIO7))->GetCheck() == 1) {
+		CString time;
+		GetDlgItem(IDC_EDIT1)->GetWindowText(time);
+		duration = _ttoi(time);
+	}
+
+	bool isSuccess = false;
+	string orders = to_string((long long) processMode) + to_string((long long) fast) + to_string((long long) duration);
+	if (((CButton*)GetDlgItem(IDC_RADIO8))->GetCheck() == 1) {
+		for (int i = 0; i < (int) this->LANIPList.size(); ++i) {
+			if (this->LANIPList[i].state == false) {
+				continue;
+			}
+			string ip = CT2A(this->LANIPList[i].ipAddress);
+			SocketLink *socketLink = new SocketLink();
+			isSuccess = socketLink->initSocket(ip);
+			if (!isSuccess) {
+				socketLink->freeSocket();
+				continue;
+			}
+			isSuccess = socketLink->linkServer();
+			if (!isSuccess) {
+				socketLink->freeSocket();
+				continue;
+			}
+			socketLink->sendOrders(orders);
+			socketLink->freeSocket();
+			delete socketLink;
+		}
+	} else {
+		int selectIndex = this->GetItemSelect();
+		string ip = CT2A(this->LANIPList[selectIndex].ipAddress);
+		SocketLink *socketLink = new SocketLink();
+		isSuccess = socketLink->initSocket(ip);
+		if (!isSuccess) {
+			socketLink->freeSocket();
+			return ;
+		}
+		isSuccess = socketLink->linkServer();
+		if (!isSuccess) {
+			socketLink->freeSocket();
+			return ;
+		}
+		socketLink->sendOrders(orders);
+		socketLink->freeSocket();
+		delete socketLink;
+	}
+}
+
+DWORD WINAPI ThreadProc(LPVOID lpParameter) 
+{
+	bool isSuccess = false;
+	for (int i = 0; i < (int) ::IpList.size(); ++i) {
+		string ip = CT2A(::IpList[i].ipAddress);
+		SocketLink *socketLink = new SocketLink();
+		socketLink->initSocket(ip);
+		isSuccess = socketLink->linkServer();
+		socketLink->freeSocket();
+		delete socketLink;
+
+		if (isSuccess) {
+			::IpList[i].state = true;
+		}
+	}
+
+	return 0;
 }

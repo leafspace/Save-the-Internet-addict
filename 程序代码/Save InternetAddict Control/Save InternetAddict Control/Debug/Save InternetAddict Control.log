@@ -1,14 +1,11 @@
-﻿生成启动时间为 2017/8/17 21:11:09。
+﻿生成启动时间为 2017/8/17 22:51:53。
      1>项目“F:\Project Engineering\Save Internet addict\程序代码\Save InternetAddict Control\Save InternetAddict Control\Save InternetAddict Control.vcxproj”在节点 2 上(build 个目标)。
      1>InitializeBuildStatus:
          正在创建“Debug\Save InternetAddict Control.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
        ClCompile:
          所有输出均为最新。
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\Save InternetAddict Control.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt "Save InternetAddict Control.cpp" "Save InternetAddict ControlDlg.cpp"
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\Save InternetAddict Control.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt "Save InternetAddict ControlDlg.cpp"
          Save InternetAddict ControlDlg.cpp
-         正在生成代码...
-         正在跳过...(未检测到相关更改)
-         Save InternetAddict Control.cpp
        ResourceCompile:
          所有输出均为最新。
        ManifestResourceCompile:
@@ -18,6 +15,7 @@
          "Debug\Save InternetAddict Control.exe.embed.manifest.res"
          "Debug\Save InternetAddict Control.obj"
          "Debug\Save InternetAddict ControlDlg.obj"
+         Debug\SocketLink.obj
          Debug\stdafx.obj
        Manifest:
          C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\Save InternetAddict Control.exe.embed.manifest" /manifest "Debug\Save InternetAddict Control.exe.intermediate.manifest" "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\Include\Manifest\dpiaware.manifest"
@@ -32,4 +30,4 @@
 
 生成成功。
 
-已用时间 00:00:02.02
+已用时间 00:00:04.35

@@ -6,6 +6,7 @@
 #include "afxcmn.h"
 
 #include <vector>
+#include "SocketLink.h"
 using namespace std;
 
 typedef struct IPItem
@@ -66,6 +67,7 @@ protected:
 private:
 	vector<IPItem> LANIPList;                                                //IP列表中显示的内容
 
+	int GetItemSelect();                                                     //获取某个listControl当前选中项的行号
 	void RefreshListCtrl();                                                  //刷新列表，即将LANIPList中的内容重新写入到列表中
 	IPAddress ChangetoStruct(CString ipAddress);                             //将CString的IP转化为本地容易处理的IP
 	bool CheckSubnetMask(IPAddress subnetMask);                              //检查子网掩码是否符合要求
@@ -78,3 +80,7 @@ public:
 	afx_msg void OnBnClickedButton3();                                       //添加一个指定IP
 	afx_msg void OnBnClickedButton4();                                       //进行操作处理
 };
+
+extern vector<IPItem> IpList;
+
+DWORD WINAPI ThreadProc(LPVOID lpParameter);

@@ -32,6 +32,7 @@ int SystemAction::getTime(void)
 
 string SystemAction::initCmdOrders(void)
 {
+	this->cmdOrders = "shutdown";
     switch(this->processMode)
     {
         case 1 : this->cmdOrders += (string)" -s"; break;
@@ -48,7 +49,7 @@ string SystemAction::initCmdOrders(void)
         this->duration = abs(duration);
     }
 
-    this->cmdOrders += (string)" -t"; 
+    this->cmdOrders += (string)" -t "; 
     this->cmdOrders += to_string((long long)this->duration);
 
     return this->cmdOrders;

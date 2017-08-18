@@ -1,10 +1,10 @@
-﻿生成启动时间为 2017/8/17 12:07:31。
+﻿生成启动时间为 2017/8/17 23:01:06。
      1>项目“F:\Project Engineering\Save Internet addict\程序代码\Save InternetAddict Server\Save InternetAddict Server\Save InternetAddict Server.vcxproj”在节点 2 上(build 个目标)。
      1>InitializeBuildStatus:
          正在创建“Debug\Save InternetAddict Server.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt SourceMain.cpp
-         SourceMain.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt SystemAction.cpp
+         SystemAction.cpp
        ManifestResourceCompile:
          所有输出均为最新。
        Link:
@@ -25,4 +25,4 @@
 
 生成成功。
 
-已用时间 00:00:01.53
+已用时间 00:00:01.03
