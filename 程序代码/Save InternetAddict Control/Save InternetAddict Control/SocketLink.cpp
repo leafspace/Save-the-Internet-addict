@@ -3,15 +3,14 @@
 
 bool SocketLink::initSocket(string ip)
 {
+	this->targetIP = ip;
     if (WSAStartup(MAKEWORD(2, 2), &this->wsaData) != 0) {
 		return false;
     }
 
-	//设置非阻塞方式连接
-	unsigned long time = 1;
-	if (ioctlsocket(this->client, FIONBIO, (unsigned long*) &time) == SOCKET_ERROR) {
-		return false;
-	}
+	int nNetTimeout = 500;
+	setsockopt(this->client, SOL_SOCKET, SO_SNDTIMEO, (char *)&nNetTimeout, sizeof(int));
+	setsockopt(this->client, SOL_SOCKET, SO_RCVTIMEO, (char *)&nNetTimeout, sizeof(int));
 
     //需要连接的服务器地址信息
 	this->server.sin_family = AF_INET;                                       //需要连接的服务器的地址信息
@@ -28,9 +27,6 @@ bool SocketLink::initSocket(string ip)
 
 bool SocketLink::linkServer(void)
 {
-	int nNetTimeout = 1000;
-	setsockopt(this->client, SOL_SOCKET, SO_SNDTIMEO, (char *)&nNetTimeout, sizeof(int));
-	setsockopt(this->client, SOL_SOCKET, SO_RCVTIMEO, (char *)&nNetTimeout, sizeof(int));
     if (connect(this->client, (struct sockaddr*)&this->server, sizeof(this->server)) == INVALID_SOCKET) {
 		return false;
 	}

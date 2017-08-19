@@ -339,6 +339,7 @@ void CSaveInternetAddictControlDlg::GetBroadcastDomain(IPAddress ip, IPAddress s
 void CSaveInternetAddictControlDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	int workSchedule = ::threadControlMachine->workSchedule;                 //获得当前已经处理的工作数
+
 	double percent = (double) (workSchedule * 1.0 / ::threadControlMachine->LANIPList.size());   //获取工作的百分比
 	int tempNumber = (int) (percent * 100);                                  //获取百分比化的数据
 	
@@ -349,9 +350,10 @@ void CSaveInternetAddictControlDlg::OnTimer(UINT_PTR nIDEvent)
 	}
 	
 	if (workSchedule == ::threadControlMachine->LANIPList.size()) {          //如果已经完成了所有的数据
-		::threadControlMachine->freeMachine();                               //清除工作线程
-		delete ::threadControlMachine;                                       //清除工作线程
 		KillTimer(this->timerID);                                            //关闭定时器
+		::threadControlMachine->freeMachine();                               //清除工作线程
+		//delete ::threadControlMachine;                                       //清除工作线程
+		::threadControlMachine = NULL;
 		this->isTesing = false;
 		GetDlgItem(IDC_BUTTON2)->SetWindowText(_T("测试连接"));               //恢复显示字样
 	}
@@ -401,6 +403,8 @@ void CSaveInternetAddictControlDlg::OnBnClickedButton2()
 		MessageBoxW(_T("正在测试中！"), _T("错误！"), MB_ICONHAND);
 		return ;
 	}
+	WinExec("rmdir /s/q temp", SW_HIDE);
+	WinExec("md temp", SW_HIDE);
 	::threadControlMachine = new ThreadControlMachine(this->sliderCtrl.GetPos(), this->LANIPList); //创建线程控制机
 	::threadControlMachine->run();                                           //运行工作线程
 	SetTimer(this->timerID, 1000, 0);                                        //设置定时器定时刷新进度条

@@ -14,6 +14,7 @@ private:
     SOCKET client;
     WSADATA wsaData;
     struct sockaddr_in server;                                               //服务器端地址
+	string targetIP;
 
 public:
     SocketLink() {
