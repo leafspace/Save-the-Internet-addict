@@ -38,10 +38,10 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	int timerID;
+	int timerID;                                                             //用户保存定时器的ID
 	vector<IPItem> LANIPList;                                                //IP列表中显示的内容
 
-	bool isTesing;
+	bool isTesing;                                                           //标识是否正在测试，用于控制防止重复测试与扫描列表
 
 	int GetItemSelect();                                                     //获取某个listControl当前选中项的行号
 	void RefreshListCtrl();                                                  //刷新列表，即将LANIPList中的内容重新写入到列表中
@@ -53,7 +53,7 @@ public:
 	CListCtrl listCtrl;
 	CSliderCtrl sliderCtrl;
 	CProgressCtrl progressCtrl;
-	void OnTimer(UINT_PTR nIDEvent);
+	void OnTimer(UINT_PTR nIDEvent);                                         //系统定时器，定时刷新进度条
 	afx_msg void OnBnClickedButton1();                                       //显示范围内的IP
 	afx_msg void OnBnClickedButton2();                                       //将范围内的IP进行连接测试
 	afx_msg void OnBnClickedButton3();                                       //添加一个指定IP

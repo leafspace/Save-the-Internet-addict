@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #pragma  comment(lib,"ws2_32.lib")
 #define PORT 5000
 
@@ -20,8 +20,8 @@ public:
         this->port = PORT;
     }
 
-    bool initSocket(string ip);
-    bool linkServer(void);
-    bool sendOrders(string orders);
-    void freeSocket(void);
+    bool initSocket(string ip);                                              //初始化socket
+    bool linkServer(void);                                                   //进行连接测试
+    bool sendOrders(string orders);                                          //发送消息
+    void freeSocket(void);                                                   //清除socket
 };

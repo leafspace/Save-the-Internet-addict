@@ -107,16 +107,16 @@ BOOL CSaveInternetAddictControlDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 
-	this->progressCtrl.SetRange(0, 100);
-	this->sliderCtrl.SetRange(1, 15, false);
-	this->sliderCtrl.SetLineSize(1);
-	this->sliderCtrl.SetPageSize(5);
-	this->sliderCtrl.SetPos(5);
+	this->progressCtrl.SetRange(0, 100);                                     //设置进度条的范围
+	this->sliderCtrl.SetRange(1, 15, false);                                 //设置拖动条的范围
+	this->sliderCtrl.SetLineSize(1);                                         //设置按上下左右键的拖动数
+	this->sliderCtrl.SetPageSize(5);                                         //设置按page键的拖动数
+	this->sliderCtrl.SetPos(5);                                              //设置初始值
 	CString str;
 	str.Format(_T("%d%%"), 0);
-	GetDlgItem(IDC_STATIC1)->SetWindowText(str);
-	str.Format(_T("线程数(%d)"), 0);
-	GetDlgItem(IDC_STATIC2)->SetWindowText(str);
+	GetDlgItem(IDC_STATIC1)->SetWindowText(str);                             //设置进度条的显示值
+	str.Format(_T("线程数(%d)"), 0); 
+	GetDlgItem(IDC_STATIC2)->SetWindowText(str);                             //设置线程数的显示值
 
 	CRect rect;
 	this->listCtrl.GetHeaderCtrl()->EnableWindow(false);                     //固定标题不被移动
@@ -142,9 +142,9 @@ BOOL CSaveInternetAddictControlDlg::OnInitDialog()
 		}
 		WSACleanup();
 	}
-	GetDlgItem(IDC_IPADDRESS1)->SetWindowText(ipAddress);
-	GetDlgItem(IDC_IPADDRESS2)->SetWindowText((CString)("255.255.255.0"));
-	GetDlgItem(IDC_IPADDRESS3)->SetWindowText(ipAddress);
+	GetDlgItem(IDC_IPADDRESS1)->SetWindowText(ipAddress);                    //设置本地IP
+	GetDlgItem(IDC_IPADDRESS2)->SetWindowText((CString)("255.255.255.0"));   //设置子网掩码
+	GetDlgItem(IDC_IPADDRESS3)->SetWindowText(ipAddress);                    //设置添加的IP
 
 	GetDlgItem(IDC_EDIT1)->SetWindowText((CString)("0"));
 	((CButton*)GetDlgItem(IDC_RADIO1))->SetCheck(true);
@@ -224,7 +224,7 @@ void CSaveInternetAddictControlDlg::RefreshListCtrl()                        //�
 	for (int i = 0; i < (int) this->LANIPList.size(); ++i) {
 		state = this->LANIPList[i].state;
 		this->listCtrl.InsertItem(i, this->LANIPList[i].ipAddress);          //插入新的一项
-		if (state) {
+		if (state) {                                                         //true为在线 false为离线
 			this->listCtrl.SetItemText(i, 1, _T("在线"));
 		} else {
 			this->listCtrl.SetItemText(i, 1, _T("离线"));
@@ -248,6 +248,7 @@ IPAddress CSaveInternetAddictControlDlg::ChangetoStruct(CString ipAddress)   //�
 	kindIP[2] = ipAddress.Mid(pointIndex[1] + 1, pointIndex[2]);
 	kindIP[3] = ipAddress.Mid(pointIndex[2] + 1);
 
+	//分别转化为数值型数据
 	IPAddress ip(0, 0, 0, 0);
 	ip.kindAddress[0] = _ttoi(kindIP[0]);
 	ip.kindAddress[1] = _ttoi(kindIP[1]);
@@ -258,7 +259,7 @@ IPAddress CSaveInternetAddictControlDlg::ChangetoStruct(CString ipAddress)   //�
 
 bool CSaveInternetAddictControlDlg::CheckSubnetMask(IPAddress subnetMask)    //检查子网掩码是否符合要求
 {
-	int norm[9] = {0, 128, 192, 224, 240, 248, 252, 254, 255};
+	int norm[9] = {0, 128, 192, 224, 240, 248, 252, 254, 255};               //设置基数
 	int index = 0;
 	while (index != 4 && subnetMask.kindAddress[index++] == 255) {}          //从前向后找到不为255的位置，因为子网掩码形似255.255.255.0
 	index--;
@@ -266,11 +267,11 @@ bool CSaveInternetAddictControlDlg::CheckSubnetMask(IPAddress subnetMask)    //�
 	while (index != 4) {
 		int i = 0;
 		for (; i < 9; ++i) {                                                 //查看index段数据是否符合子网掩码的标准
-			if (norm[i] == subnetMask.kindAddress[index]) {
+			if (norm[i] == subnetMask.kindAddress[index]) {                  //如果子网掩码为基数中的一种，则符合要求
 				break;
 			}
 		}
-		if (i == 9) {
+		if (i == 9) {                                                        //不为基数中的一种，则说明不符合规格
 			return false;
 		}
 		index++;
@@ -318,18 +319,18 @@ void CSaveInternetAddictControlDlg::GetBroadcastDomain(IPAddress ip, IPAddress s
 	}
 
 	if (index < 4) {
-		int baseNumber = 256 - subnetMask.kindAddress[index];
-		for (int i = 0; i < 256 / baseNumber; ++i) {
+		int baseNumber = 256 - subnetMask.kindAddress[index];                //计算每个子网中的数目为多少
+		for (int i = 0; i < 256 / baseNumber; ++i) {                         //循环所有子网
 			if (ip.kindAddress[index] > i * baseNumber &&
-				ip.kindAddress[index] < (i + 1) * baseNumber) {
-					begin.kindAddress[index] = i * baseNumber;
-					end.kindAddress[index] = (i + 1) * baseNumber - 1;
+				ip.kindAddress[index] < (i + 1) * baseNumber) {              //找到当前所在的子网
+					begin.kindAddress[index] = i * baseNumber;               //首地址
+					end.kindAddress[index] = (i + 1) * baseNumber - 1;       //广播地址
 					break;
 			}
 		}
 	}
 
-	for (int i = index + 1; i < 4; ++i) {
+	for (int i = index + 1; i < 4; ++i) {                                    //之后的处理
 		begin.kindAddress[i] = 0;
 		end.kindAddress[i] = 255;
 	}
@@ -337,39 +338,40 @@ void CSaveInternetAddictControlDlg::GetBroadcastDomain(IPAddress ip, IPAddress s
 
 void CSaveInternetAddictControlDlg::OnTimer(UINT_PTR nIDEvent)
 {
-	int workSchedule = ::threadControlMachine->workSchedule;
-	double percent = (double) (workSchedule * 1.0 / ::threadControlMachine->LANIPList.size());
-	int tempNumber = (int) (percent * 100);
-	if (workSchedule == ::threadControlMachine->LANIPList.size()) {
-		::threadControlMachine->freeMachine();
-		delete ::threadControlMachine;
-		KillTimer(this->timerID);
-		this->progressCtrl.SetPos(100);
-		GetDlgItem(IDC_STATIC1)->SetWindowText((CString)("100%"));
-		this->isTesing = false;
-		GetDlgItem(IDC_BUTTON2)->SetWindowText(_T("测试连接"));
-	}
-
-	if (tempNumber % 5 == 0) {
+	int workSchedule = ::threadControlMachine->workSchedule;                 //获得当前已经处理的工作数
+	double percent = (double) (workSchedule * 1.0 / ::threadControlMachine->LANIPList.size());   //获取工作的百分比
+	int tempNumber = (int) (percent * 100);                                  //获取百分比化的数据
+	
+	if (tempNumber % 5 == 0) {                                               //定时刷新列表
+		this->LANIPList.clear();
+		this->LANIPList = ::threadControlMachine->LANIPList;                 //拷贝完成的内容
 		this->RefreshListCtrl();
+	}
+	
+	if (workSchedule == ::threadControlMachine->LANIPList.size()) {          //如果已经完成了所有的数据
+		::threadControlMachine->freeMachine();                               //清除工作线程
+		delete ::threadControlMachine;                                       //清除工作线程
+		KillTimer(this->timerID);                                            //关闭定时器
+		this->isTesing = false;
+		GetDlgItem(IDC_BUTTON2)->SetWindowText(_T("测试连接"));               //恢复显示字样
 	}
 
 	CString str;
 	str.Format(_T("%d%%"), tempNumber);
 	this->progressCtrl.SetPos(tempNumber);
-	GetDlgItem(IDC_STATIC1)->SetWindowText(str);
+	GetDlgItem(IDC_STATIC1)->SetWindowText(str);                             //设置百分比的数据
 }
 
 void CSaveInternetAddictControlDlg::OnBnClickedButton1()                     //显示范围内的IP
 {
 	// TODO: 在此添加控件通知处理程序代码
-	if (this->isTesing) {
+	if (this->isTesing) {                                                    //控制无法重复测试
 		MessageBoxW(_T("正在测试中！"), _T("错误！"), MB_ICONHAND);
 		return ;
 	}
 	CString subnetMask;
-	GetDlgItem(IDC_IPADDRESS2)->GetWindowText(subnetMask);
-	if (!this->CheckSubnetMask(this->ChangetoStruct(subnetMask))) {
+	GetDlgItem(IDC_IPADDRESS2)->GetWindowText(subnetMask);                   //获取子网掩码值
+	if (!this->CheckSubnetMask(this->ChangetoStruct(subnetMask))) {          //进行子网掩码值的正确与否的判断
 		MessageBoxW(_T("请使用正确的子网掩码！"), _T("错误！"), MB_ICONHAND);
 		GetDlgItem(IDC_IPADDRESS2)->SetWindowText((CString)("255.255.255.0"));
 		return ;
@@ -377,12 +379,12 @@ void CSaveInternetAddictControlDlg::OnBnClickedButton1()                     //�
 
 	CString ipAddress;
 	IPAddress begin(0, 0, 0, 0), end(0, 0, 0, 0);
-	GetDlgItem(IDC_IPADDRESS1)->GetWindowText(ipAddress);
-	this->GetBroadcastDomain(this->ChangetoStruct(ipAddress), this->ChangetoStruct(subnetMask), begin, end);
+	GetDlgItem(IDC_IPADDRESS1)->GetWindowText(ipAddress);                    //获取设置的ip地址
+	this->GetBroadcastDomain(this->ChangetoStruct(ipAddress), this->ChangetoStruct(subnetMask), begin, end); //获取ip地址范围
 
-	this->LANIPList.clear();
-	vector<IPAddress> domainIP = this->GetDomainIP(begin, end);
-	for (int i = 0; i < (int) domainIP.size(); ++i) {
+	this->LANIPList.clear();                                                 //清除列表项
+	vector<IPAddress> domainIP = this->GetDomainIP(begin, end);              //获取列表项数值
+	for (int i = 0; i < (int) domainIP.size(); ++i) {                        //重新转换存入
 		IPItem item(domainIP[i].toCString(), false);
 		this->LANIPList.push_back(item);
 	}
@@ -399,10 +401,10 @@ void CSaveInternetAddictControlDlg::OnBnClickedButton2()
 		MessageBoxW(_T("正在测试中！"), _T("错误！"), MB_ICONHAND);
 		return ;
 	}
-	::threadControlMachine = new ThreadControlMachine(this->sliderCtrl.GetPos(), this->LANIPList);
-	::threadControlMachine->run();
-	SetTimer(this->timerID, 1000, 0);
-	this->isTesing = true;
+	::threadControlMachine = new ThreadControlMachine(this->sliderCtrl.GetPos(), this->LANIPList); //创建线程控制机
+	::threadControlMachine->run();                                           //运行工作线程
+	SetTimer(this->timerID, 1000, 0);                                        //设置定时器定时刷新进度条
+	this->isTesing = true;                                                   //表明正在测试
 	GetDlgItem(IDC_BUTTON2)->SetWindowText(_T("测试中"));
 }
 
@@ -411,14 +413,14 @@ void CSaveInternetAddictControlDlg::OnBnClickedButton3()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	CString addIpAddress;
-	GetDlgItem(IDC_IPADDRESS3)->GetWindowText(addIpAddress);
-	for (int i = 0; i < (int) this->LANIPList.size(); ++i) {
+	GetDlgItem(IDC_IPADDRESS3)->GetWindowText(addIpAddress);                 //获取要添加的IP
+	for (int i = 0; i < (int) this->LANIPList.size(); ++i) {                 //循环查看列表是否存在重复的
 		if (this->LANIPList[i].ipAddress == addIpAddress) {
 			return;
 		}
 	}
 	IPItem ipItem(addIpAddress, false);
-	this->LANIPList.push_back(ipItem);
+	this->LANIPList.push_back(ipItem);                                       //添加进入列表项
 
 	this->RefreshListCtrl();
 }
@@ -428,7 +430,7 @@ void CSaveInternetAddictControlDlg::OnBnClickedButton4()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	int processMode = 1;
-	for (int i = IDC_RADIO1; i <= IDC_RADIO3; ++i) {
+	for (int i = IDC_RADIO1; i <= IDC_RADIO3; ++i) {                         //获取处理方式
 		if (((CButton*)GetDlgItem(i))->GetCheck() == 1) {
 			processMode = i - IDC_RADIO1 + 1;
 			break;
@@ -436,21 +438,21 @@ void CSaveInternetAddictControlDlg::OnBnClickedButton4()
 	}
 
 	int fast = 1;
-	if (((CButton*)GetDlgItem(IDC_RADIO4))->GetCheck() != 1) {
+	if (((CButton*)GetDlgItem(IDC_RADIO4))->GetCheck() != 1) {               //获取是否快速处理无提示
 		fast = 0;
 	}
 	
 	int duration = 0;
-	if (((CButton*)GetDlgItem(IDC_RADIO7))->GetCheck() == 1) {
+	if (((CButton*)GetDlgItem(IDC_RADIO7))->GetCheck() == 1) {               //获取定时时间
 		CString time;
 		GetDlgItem(IDC_EDIT1)->GetWindowText(time);
 		duration = _ttoi(time);
 	}
 
 	bool isSuccess = false;
-	string orders = to_string((long long) processMode) + to_string((long long) fast) + to_string((long long) duration);
-	if (((CButton*)GetDlgItem(IDC_RADIO8))->GetCheck() == 1) {
-		int sumSuccess = 0;
+	string orders = to_string((long long) processMode) + to_string((long long) fast) + to_string((long long) duration);//发送的数据
+	if (((CButton*)GetDlgItem(IDC_RADIO8))->GetCheck() == 1) {               //选择列表处理
+		int sumSuccess = 0;                                                  //用于保存所有处理的个数
 		for (int i = 0; i < (int) this->LANIPList.size(); ++i) {
 			if (this->LANIPList[i].state == false) {
 				continue;
@@ -475,7 +477,7 @@ void CSaveInternetAddictControlDlg::OnBnClickedButton4()
 		CString str;
 		str.Format(_T("共发送%d个对象."), sumSuccess);
 		MessageBoxW(str, _T("提示"), MB_ICONASTERISK);
-	} else {
+	} else {                                                                 //选择单个对象处理
 		int selectIndex = this->GetItemSelect();
 		string ip = CT2A(this->LANIPList[selectIndex].ipAddress);
 		SocketLink *socketLink = new SocketLink();
@@ -501,7 +503,7 @@ void CSaveInternetAddictControlDlg::OnNMCustomdrawSlider1(NMHDR *pNMHDR, LRESULT
 	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
 	CString str;
-	str.Format(_T("线程数(%d)"), this->sliderCtrl.GetPos());
+	str.Format(_T("线程数(%d)"), this->sliderCtrl.GetPos());                    //设置显示当前的线程数
 	GetDlgItem(IDC_STATIC2)->SetWindowText(str);
 	*pResult = 0;
 }

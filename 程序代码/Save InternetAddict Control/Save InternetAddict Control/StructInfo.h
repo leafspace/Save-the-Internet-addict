@@ -1,7 +1,8 @@
-#pragma once
+﻿#pragma once
 
 #include "afxcmn.h"
-typedef struct IPItem
+
+typedef struct IPItem                                                        //用于列表项处理用
 {
 	CString ipAddress;
 	bool state;
@@ -12,7 +13,7 @@ typedef struct IPItem
 	}
 }IPItem;
 
-typedef struct IPAddress
+typedef struct IPAddress                                                     //提供ip范围处理用
 {
 	int kindAddress[4];
 
