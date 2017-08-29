@@ -9,9 +9,7 @@ import android.view.View;
 import android.os.Bundle;
 
 import java.util.List;
-import java.net.Socket;
 import java.util.Arrays;
-import java.io.PrintWriter;
 
 public class MainActivity extends AppCompatActivity {
     private String[] handle = {"关机", "重启", "注销"};
@@ -65,16 +63,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sentMessage(String ip, String messageInfo) {
-        try {
-            Socket socket = new Socket(ip, 5000);
-            PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
-            printWriter.println(messageInfo);
-            printWriter.flush();
-            printWriter.close();
-            socket.close();
-            Toast.makeText(this,"拯救成功！", Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            Toast.makeText(this,"无法连接！", Toast.LENGTH_LONG).show();
+        if (NetThread.state != 0) {
+            Toast.makeText(this, "上一次处理还未结束!", Toast.LENGTH_LONG);
+        } else {
+            NetThread netThread = new NetThread(ip, messageInfo);
+            netThread.start();
+            Toast.makeText(this, "消息已经发送!", Toast.LENGTH_LONG);
         }
     }
 
@@ -92,6 +86,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 editText1.setText("");
+            }
+        });
+        this.editText2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editText2.setText("0");
             }
         });
 
