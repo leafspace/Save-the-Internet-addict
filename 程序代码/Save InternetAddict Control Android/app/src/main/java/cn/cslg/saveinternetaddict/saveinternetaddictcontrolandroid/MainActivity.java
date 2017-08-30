@@ -111,8 +111,9 @@ public class MainActivity extends AppCompatActivity {
         String handle = this.spinner1.getSelectedItem().toString();
         String info = this.spinner2.getSelectedItem().toString();
 
-
-        String messageInfo = "" + this.getID(handle, this.handle) + this.getID(info, this.info) + handleTime;
+        int target = this.getID(handle, this.handle);
+        int fast = this.getID(info, this.info);
+        String messageInfo = "" + target + fast + handleTime;
         this.sentMessage(ip, messageInfo);
     }
 }
