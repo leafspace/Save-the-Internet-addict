@@ -151,6 +151,7 @@ BOOL CSaveInternetAddictControlDlg::OnInitDialog()
 	((CButton*)GetDlgItem(IDC_RADIO4))->SetCheck(true);
 	((CButton*)GetDlgItem(IDC_RADIO6))->SetCheck(true);
 	((CButton*)GetDlgItem(IDC_RADIO8))->SetCheck(true);
+	((CButton*)GetDlgItem(IDC_RADIO10))->SetCheck(true);
 
 	this->isTesing = false;
 
@@ -458,8 +459,10 @@ void CSaveInternetAddictControlDlg::OnBnClickedButton4()
 	if (((CButton*)GetDlgItem(IDC_RADIO8))->GetCheck() == 1) {               //选择列表处理
 		int sumSuccess = 0;                                                  //用于保存所有处理的个数
 		for (int i = 0; i < (int) this->LANIPList.size(); ++i) {
-			if (this->LANIPList[i].state == false) {
-				continue;
+			if (((CButton*)GetDlgItem(IDC_RADIO11))->GetCheck() == 1) {      //是非强制发送
+				if (this->LANIPList[i].state == false) {
+					continue;
+				}
 			}
 			string ip = CT2A(this->LANIPList[i].ipAddress);
 			SocketLink *socketLink = new SocketLink();
@@ -484,6 +487,11 @@ void CSaveInternetAddictControlDlg::OnBnClickedButton4()
 	} else {                                                                 //选择单个对象处理
 		int selectIndex = this->GetItemSelect();
 		string ip = CT2A(this->LANIPList[selectIndex].ipAddress);
+		if (((CButton*)GetDlgItem(IDC_RADIO11))->GetCheck() == 1) {          //是非强制发送
+			if (this->LANIPList[selectIndex].state == false) {
+				return ;
+			}
+		}
 		SocketLink *socketLink = new SocketLink();
 		isSuccess = socketLink->initSocket(ip);
 		if (!isSuccess) {
